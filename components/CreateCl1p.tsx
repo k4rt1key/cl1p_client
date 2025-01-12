@@ -11,6 +11,12 @@ import { FilePreview } from '@/components/FilePreview'
 import { DragDropZone } from '@/components/DragAndDrop'
 import { getTimeOptions, convertToHours, type TimeUnit } from '@/utils/time'
 
+interface TimeOption {
+  value: number;
+  label: string;
+}
+
+
 interface FormData {
   name: string
   text: string
@@ -213,7 +219,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
                   <SelectValue placeholder="Select number" />
                 </SelectTrigger>
                 <SelectContent>
-                  {timeOptions.map((option: any) => (
+                  {timeOptions.map((option: TimeOption) => (
                     <SelectItem
                       key={option.value}
                       value={option.value.toString()}

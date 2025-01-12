@@ -1,6 +1,6 @@
 export type TimeUnit = 'hours' | 'days' | 'months'
 
-export const getTimeOptions = (unit: TimeUnit) => {
+export const getTimeOptions = (unit: string) => {
   switch (unit) {
     case 'hours':
       return Array.from({ length: 24 }, (_, i) => ({

@@ -22,7 +22,9 @@ export default function SearchCl1p({
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     propsTriggerNow()
-    fetchCl1pData && fetchCl1pData()
+    if(fetchCl1pData){
+      fetchCl1pData()
+    }
   }
 
   return (
