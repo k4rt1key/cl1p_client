@@ -65,6 +65,12 @@
     --ring: 212.7 26.8% 83.9%;
   }
 }
+
+@layer components {
+  .aspect-3-4 {
+    aspect-ratio: 3/4;
+  }
+}
  
 @layer base {
   * {
@@ -73,9 +79,5 @@
   body {
     @apply bg-background text-foreground;
   }
-}
-
-body {
-  background: linear-gradient(to right, #667eea, #764ba2);
 }
 
