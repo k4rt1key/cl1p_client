@@ -46,7 +46,7 @@ export default function Cl1pPage() {
                 body: JSON.stringify({ name: name, password: password })
             }
 
-            const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cl1p/search`, requestOptions)
+            const response = await fetch(`/api/cl1p/search`, requestOptions)
             const jsonResponse = await response.json();
             setLoading(false);
 

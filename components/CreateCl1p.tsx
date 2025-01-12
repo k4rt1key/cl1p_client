@@ -99,7 +99,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
 
     try {
       if (formData.files.length > 0) {
-        const response = await fetch(`${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cl1p/upload`, {
+        const response = await fetch(`/api/cl1p/upload`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
@@ -126,7 +126,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
       const hours = convertToHours(formData.expiryValue, formData.expiryUnit)
 
       const createResponse = await fetch(
-        `${process.env.NEXT_PUBLIC_BACKEND_URL}/api/cl1p/create`,
+        `/api/cl1p/create`,
         {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
