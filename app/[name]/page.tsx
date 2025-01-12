@@ -74,9 +74,9 @@ export default function Cl1pPage() {
                     setMode('display')
                 }
 
-            } catch (err) {
+            } catch (error) {
                 toast.error('An unexpected error occurred')
-                err += ""
+                console.error(error)
             }
         }
 

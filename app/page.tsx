@@ -1,7 +1,7 @@
 // REACT - NEXT
 // app/page.tsx
 'use client'
-import { useParams, useRouter } from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 // UI
 import CreateCl1p from '@/components/CreateCl1p'
@@ -73,7 +73,7 @@ export default function Cl1pPage() {
         } catch (err) {
             toast.error('An unexpected error occurred')
             setLoading(false);
-            err += ""
+            console.error(err)
         }
     }
 
