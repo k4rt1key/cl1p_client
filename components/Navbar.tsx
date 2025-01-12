@@ -53,13 +53,13 @@ export function Navbar() {
                             className="flex items-center text-primary hover:text-primary/80 transition-colors"
                         >
                             <Forward className="h-6 w-6 mr-2" />
-                            <span className="font-bold text-lg">Back to Home</span>
+                            <span className="font-bold text-sm sm:text-lg">Back to Home</span>
                         </button>
                         <button
                             className="flex items-center text-primary hover:text-primary/80 transition-colors"
                         >
                             <Clipboard className="h-6 w-6 mr-2" />
-                            <span className="font-bold text-lg"> Cl1p.in </span>
+                            <span className="font-bold text-sm sm:text-lg"> Cl1p.in </span>
                         </button>
 
                     </div>
