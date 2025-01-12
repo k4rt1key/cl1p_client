@@ -21,7 +21,7 @@ export default function RootLayout({
         <div className='bg-background/30 backdrop-blur-md blur-container h-10 fixed top-0 left-0 right-0'></div>
         <Navbar/>
         <div className='mt-20'></div>
-        <div className='pt-24'>
+        <div className='pt-24 sm-down:p-2'>
           {children}
         </div>
         <Toaster />
