@@ -9,9 +9,7 @@ export default function SearchCl1p({
   propsSetName,
   propsSetPassword,
   propsIsPassword,
-  propsSetIsPassword,
   propsLoading,
-  propsSetLoading,
   propsTriggerNow,
   fetchCl1pData,
 }: SearchProps) {

@@ -1,12 +1,10 @@
 'use client'
 import { useState, useEffect } from 'react'
 import { Forward, Clipboard } from 'lucide-react'
-import { useRouter } from 'next/navigation'  // Changed from next/router
 import UseCl1pZustand from '@/lib/store'
 
 
 export function Navbar() {
-    const router = useRouter()
     const [mounted, setMounted] = useState(false)
 
 

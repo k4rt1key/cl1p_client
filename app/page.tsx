@@ -1,31 +1,23 @@
 // REACT - NEXT
 // app/page.tsx
 'use client'
-import { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 
 // UI
-import DisplayCl1p from '@/components/DisplayCl1p'
 import CreateCl1p from '@/components/CreateCl1p'
 import SearchCl1p from '@/components/SearchCl1p'
 import { InstructionCards } from '@/components/InstructionCards'
 
 import toast from 'react-hot-toast'
 
-
-// TYPES
-import { Cl1pType } from '@/types/types'
-
 // STORE
 import UseCl1pZustand from '@/lib/store'
 
 export default function Cl1pPage() {
-    const { nameParams } = useParams()
     const router = useRouter()
 
     const name = UseCl1pZustand((state) => state.name)
     const password = UseCl1pZustand((state) => state.password)
-    const trigger = UseCl1pZustand((state) => state.trigger)
     const mode = UseCl1pZustand((state) => state.mode)
     const isPassword = UseCl1pZustand((state) => state.isPassword)
     const loading = UseCl1pZustand((state) => state.loading)
@@ -81,6 +73,7 @@ export default function Cl1pPage() {
         } catch (err) {
             toast.error('An unexpected error occurred')
             setLoading(false);
+            err += ""
         }
     }
 

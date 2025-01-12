@@ -1,8 +1,8 @@
 // REACT - NEXT
 // app/[name]/page.tsx
 'use client'
-import { useEffect, useState } from 'react'
-import { useParams, useRouter, usePathname } from 'next/navigation'
+import { useEffect } from 'react'
+import { useRouter, usePathname } from 'next/navigation'
 
 // UI
 import DisplayCl1p from '@/components/DisplayCl1p'
@@ -76,6 +76,7 @@ export default function Cl1pPage() {
 
             } catch (err) {
                 toast.error('An unexpected error occurred')
+                err += ""
             }
         }
 
