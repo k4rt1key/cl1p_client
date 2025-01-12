@@ -18,7 +18,6 @@ export default function Cl1pPage() {
 
     const name = UseCl1pZustand((state) => state.name);
     const password = UseCl1pZustand((state) => state.password);
-    const trigger = UseCl1pZustand((state) => state.trigger);
     const mode = UseCl1pZustand((state) => state.mode);
     const isPassword = UseCl1pZustand((state) => state.isPassword);
     const loading = UseCl1pZustand((state) => state.loading);
