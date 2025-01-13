@@ -7,8 +7,6 @@ import UseCl1pZustand from '@/lib/store'
 export function Navbar() {
     const [mounted, setMounted] = useState(false)
 
-
-
     // Destructure all state setters for cleaner code
     const {
         setName,
@@ -47,7 +45,7 @@ export function Navbar() {
             <div className="relative w-full max-w-3xl">
                 <div className="absolute inset-0 bg-background/30 backdrop-blur-md rounded-full" />
                 <nav className="relative bg-background/70 backdrop-blur-sm rounded-full shadow-lg">
-                    <div className="px-16 py-3 flex justify-between items-center">
+                    <div className="px-8 sm:px-16 py-3 flex justify-between items-center">
                         <button
                             onClick={handleHomeClick}
                             className="flex items-center text-primary hover:text-primary/80 transition-colors"

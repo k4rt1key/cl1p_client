@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useCallback } from 'react';
+import { useEffect, useState,useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 // UI
@@ -15,6 +15,7 @@ import { InstructionCards } from '@/components/InstructionCards';
 
 export default function Cl1pPage() {
     const router = useRouter();
+    const [searched, setSearched] = useState(false);
 
     const name = UseCl1pZustand((state) => state.name);
     const password = UseCl1pZustand((state) => state.password);
@@ -71,7 +72,7 @@ export default function Cl1pPage() {
             toast.error('An unexpected error occurred');
             console.error(error);
         }
-    }, [name, password, router, setCl1pData, setIsPassword, setLoading, setMode]);
+    }, [searched, router, setCl1pData, setIsPassword, setLoading, setMode]);
 
     useEffect(() => {
         if (!cl1pData) {
@@ -99,7 +100,9 @@ export default function Cl1pPage() {
                 propsLoading={loading}
                 propsSetLoading={setLoading}
                 propsTriggerNow={triggerNow}
-                fetchCl1pData={() => {}}
+                fetchCl1pData={() => {
+                    setSearched(!searched);
+                }}
             />
             <InstructionCards />
         </>

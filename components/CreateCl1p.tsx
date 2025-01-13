@@ -134,7 +134,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
             name: formData.name,
             password: formData.password,
             expiry: new Date(Date.now() + hours * 60 * 60 * 1000).toISOString(),
-            text: formData.text,
+            text: formData.text !== '' ? formData.text : "No text shared 😔",
             files: formData.files.map(file => ({
               fileName: file.name,
               contentType: file.type
@@ -173,7 +173,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
               placeholder="Name"
               required
               type='text'
-              className="w-full text-lg py-2 px-3 border-2 border-gray-100 rounded-xl focus:outline-none border-2 border-gray-300"
+              className="w-full text-sm sm:text-lg py-2 px-3 border-2 border-gray-100 rounded-xl focus:outline-none border-2 border-gray-300"
             />
             <input
               name="password"
@@ -181,7 +181,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
               value={formData.password}
               onChange={handleInputChange}
               placeholder="Password (optional)"
-              className="w-full text-lg py-2 px-3 border-2 border-gray-100 rounded-xl focus:outline-none border-2 border-gray-300"
+              className="w-full text-sm sm:text-lg py-2 px-3 border-2 border-gray-100 rounded-xl focus:outline-none border-2 border-gray-300"
             />
           </div>
 
@@ -190,7 +190,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
           <DragDropZone onFileSelect={handleFileSelect} />
 
           {formData.files.length > 0 && (
-            <div className="grid grid-cols-3 gap-4 sm:grid-cols-2">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
               {formData.files.map((file, index) => (
                 <FilePreview
                   key={`${file.name}-${index}`}
