@@ -104,7 +104,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             files: formData.files.map(file => ({
-              fileName: file.name,
+              fileName: file.name.trim().toLowerCase(),
               contentType: file.type
             }))
           })
