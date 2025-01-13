@@ -2,28 +2,15 @@
 
 import { QRCodeSVG } from 'qrcode.react'
 import { Button } from "@/components/ui/button"
-import { Copy, ExternalLink } from 'lucide-react'
+import { Copy } from 'lucide-react'
 import { DisplayProps } from '@/types/types'
 import toast from 'react-hot-toast'
 import { FilePreviewDisplay } from './FilePreviewDisplay'
 
-const FileEmoji = {
-  pdf: '📄',
-  jpg: '🖼️',
-  jpeg: '🖼️',
-  png: '🖼️',
-  gif: '🖼️',
-  mp3: '🎵',
-  wav: '🎵',
-  mp4: '🎥',
-  avi: '🎥',
-  mov: '🎥',
-  default: '📎'
-}
 
 export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
   if (!propsData) return null
-  const { text, files, expiry } = propsData
+  const { text, files } = propsData
 
   const cl1pUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/${propsName}`
 
@@ -32,10 +19,6 @@ export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
     toast.success('Copied to clipboard!')
   }
 
-  const getFileEmoji = (fileName: string) => {
-    const extension = fileName.split('.').pop()?.toLowerCase()
-    return FileEmoji[extension as keyof typeof FileEmoji] || FileEmoji.default
-  }
 
   return (
     <div className="w-full max-w-3xl mx-auto space-y-6">

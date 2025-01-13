@@ -1,7 +1,3 @@
-import { X } from 'lucide-react'
-import { Button } from '@/components/ui/button'
-import Image from 'next/image'
-
 interface FilePreviewProps {
     url: string,
     fileName: string
@@ -48,7 +44,7 @@ export function FilePreviewDisplay({ url, fileName, contentType }: FilePreviewPr
             <div className={`relative rounded-lg overflow-hidden transition-all duration-200`}>
                 <div className="bg-card p-4 aspect-square flex flex-col">
                     <div className="flex-1 flex items-center justify-center bg-muted rounded-lg mb-4">
-                            {getFilePreview({ url, fileName, contentType })}
+                        {getFilePreview({ url, fileName, contentType })}
                     </div>
                     <div className="flex items-center gap-2">
                         <div className="flex-1 min-w-0">
