@@ -56,7 +56,7 @@ export default function Cl1pPage() {
                 setIsPassword(true);
             }
 
-            if (response.status == 400 || response.status == 500) {
+            if (response.status == 500) {
                 toast.error(jsonResponse.message);
             }
 
