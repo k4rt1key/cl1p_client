@@ -10,6 +10,7 @@ import UseCl1pZustand from '@/lib/store'
 import { FilePreview } from '@/components/FilePreview'
 import { DragDropZone } from '@/components/DragAndDrop'
 import { getTimeOptions, convertToHours, type TimeUnit } from '@/utils/time'
+import { fixFileName } from '@/utils/file'
 
 interface TimeOption {
   value: number;
@@ -104,7 +105,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             files: formData.files.map(file => ({
-              fileName: file.name.toLowerCase(),
+              fileName: fixFileName(file.name),
               contentType: file.type
             }))
           })
@@ -136,7 +137,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
             expiry: new Date(Date.now() + hours * 60 * 60 * 1000).toISOString(),
             text: formData.text !== '' ? formData.text : "No text shared 😔",
             files: formData.files.map(file => ({
-              fileName: file.name,
+              fileName: fixFileName(file.name),
               contentType: file.type
             }))
           })
