@@ -2,7 +2,6 @@
 // app/page.tsx
 'use client'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
 
 // UI
 import CreateCl1p from '@/components/CreateCl1p'

@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState } from 'react'
 import { SearchProps } from '@/types/types'
-import Router from 'next/navigation'
+import { useRouter } from 'next/navigation'
 
 export default function SearchCl1p({
   propsName,
@@ -17,10 +17,15 @@ export default function SearchCl1p({
 }: SearchProps) {
   const [passType, setPassType] = useState<'text' | 'password'>('password')
   const [propsNameState, setPropsNameState] = useState<string>(propsName)
+  const router = useRouter()
 
   useEffect(() => {
     setPropsNameState(propsName)
   },[propsName])
+
+  useEffect(() => {
+   fetchCl1pData()
+  },[])
 
   useEffect(() => {
     if(propsIsPassword){
@@ -28,7 +33,6 @@ export default function SearchCl1p({
     }
   },[propsNameState])
 
-  const router = Router.useRouter()
 
   if (!propsSetName || !propsSetPassword) {
     throw new Error("Development Error !!!")
