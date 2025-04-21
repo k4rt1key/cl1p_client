@@ -51,7 +51,9 @@ export default function Cl1pPage() {
             setLoading(false);
 
             if (response.status === 401) {
-                // toast.error('ENTER CORRECT CREDENTIALS');
+                if (password != '') {
+                    toast.error('Please enter a valid password')
+                }
                 setIsPassword(true);
             }
 
