@@ -53,7 +53,7 @@ export default function Cl1pPage() {
             if (response.status === 401) {
                 if (password != '') {
                     toast.error('Please enter a valid password')
-                }
+                }   
                 setIsPassword(true);
             }
 
