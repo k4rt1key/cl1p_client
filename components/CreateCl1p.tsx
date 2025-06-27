@@ -9,7 +9,7 @@ import { toast } from 'react-hot-toast'
 import UseCl1pZustand from '@/lib/store'
 import { FilePreview } from '@/components/FilePreview'
 import { DragDropZone } from '@/components/DragAndDrop'
-import { getTimeOptions, convertToHours, type TimeUnit } from '@/utils/time'
+import { convertToHours, type TimeUnit } from '@/utils/time'
 import { fixFileName } from '@/utils/file'
 
 interface FormData {

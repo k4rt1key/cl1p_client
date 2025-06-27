@@ -1,4 +1,5 @@
-import { File, FileText, Image as ImageIcon, Video, Music, Archive, Code, Presentation, Download, Eye } from 'lucide-react'
+import { File, FileText, Image as ImageIcon, Video, Music, Archive, Download, Eye } from 'lucide-react'
+import Image from 'next/image';
 
 interface FilePreviewProps {
     url: string,
@@ -22,10 +23,12 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
         const type = (mimeType || '').toLowerCase();
         if (type.startsWith('image/')) {
             return (
-                <img
+                <Image
                     src={url}
                     alt={fileName}
                     className="w-full h-full object-cover rounded"
+                    width={400}
+                    height={400}
                     loading="lazy"
                 />
             );

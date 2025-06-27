@@ -18,7 +18,6 @@ export default function SearchCl1p({
 }: SearchProps) {
   const [passType, setPassType] = useState<'text' | 'password'>('password')
   const [propsNameState, setPropsNameState] = useState<string>(propsName)
-  const debounceTimeout = useRef<NodeJS.Timeout | null>(null)
   const router = useRouter()
 
   useEffect(() => {

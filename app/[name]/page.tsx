@@ -1,5 +1,5 @@
 'use client';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { useRouter, usePathname } from 'next/navigation';
 
 // UI
@@ -33,7 +33,7 @@ export default function Cl1pPage() {
     const setLoading = UseCl1pZustand((state) => state.setLoading);
     const setCl1pData = UseCl1pZustand((state) => state.setCl1pData);
 
-    const fetchCl1pData = async () => {
+    const fetchCl1pData = useCallback(async () => {
         try {
             setLoading(true);
             const requestOptions = {
@@ -73,7 +73,7 @@ export default function Cl1pPage() {
             toast.error('An unexpected error occurred');
             console.error(error);
         }
-    };
+    }, [name, password, router, setCl1pData, setIsPassword, setLoading, setMode]);
 
     useEffect(() => {
         if (!cl1pData) {
