@@ -15,6 +15,7 @@ import { InstructionCards } from '@/components/InstructionCards';
 
 export default function Cl1pPage() {
     const router = useRouter();
+    const pathname = usePathname();
     const [searched, setSearched] = useState(false);
 
     const name = UseCl1pZustand((state) => state.name);
@@ -31,8 +32,6 @@ export default function Cl1pPage() {
     const setIsPassword = UseCl1pZustand((state) => state.setIsPassword);
     const setLoading = UseCl1pZustand((state) => state.setLoading);
     const setCl1pData = UseCl1pZustand((state) => state.setCl1pData);
-
-    setName(usePathname().replace('/', ''));
 
     const fetchCl1pData = async () => {
         try {
@@ -81,6 +80,10 @@ export default function Cl1pPage() {
             fetchCl1pData();
         }
     }, [name, searched]);
+
+    useEffect(() => {
+        setName(pathname.replace('/', ''));
+    }, [pathname]);
 
     if (mode === 'create') {
         return <CreateCl1p propsName={name} propsPassword={password} />;

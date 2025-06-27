@@ -89,30 +89,45 @@ export default function Cl1pPage() {
     }
 
     return (
-        <main className="flex min-h-screen flex-col items-center justify-center p-2 sm:p-8">
-            <SearchCl1p
-                propsName={name}
-                propsSetName={setName}
+        <main className="min-h-screen py-12 px-4">
+            <div className="max-w-4xl mx-auto space-y-12">
+                {/* Hero Section */}
+                <div className="text-center space-y-6">
+                    <h1 className="text-4xl md:text-5xl font-bold">
+                        Cl1p
+                    </h1>
+                    <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
+                        Share files and text instantly with secure links
+                    </p>
+                </div>
 
-                propsPassword={password}
-                propsSetPassword={setPassword}
+                {/* Search Section */}
+                <div className="flex justify-center">
+                    <SearchCl1p
+                        propsName={name}
+                        propsSetName={setName}
 
-                propsIsPassword={isPassword}
-                propsSetIsPassword={setIsPassword}
+                        propsPassword={password}
+                        propsSetPassword={setPassword}
 
-                propsLoading={loading}
-                propsSetLoading={setLoading}
+                        propsIsPassword={isPassword}
+                        propsSetIsPassword={setIsPassword}
 
-                propsTriggerNow={triggerNow}
+                        propsLoading={loading}
+                        propsSetLoading={setLoading}
 
-                fetchCl1pData={fetchCl1pData}
-            />
-            <div className="mt-6">
-                <h2 className="text-2xl font-semibold mb-6 text-white text-center">How to Use Cl1p</h2>
-                <InstructionCards />
+                        propsTriggerNow={triggerNow}
+
+                        fetchCl1pData={fetchCl1pData}
+                    />
+                </div>
+
+                {/* Instructions Section */}
+                <div>
+                    <InstructionCards />
+                </div>
             </div>
         </main>
     )
-
 }
 

@@ -22,10 +22,17 @@ export interface CreateProps {
     propsPassword: string,
 }
 
+export interface FileMeta {
+    url: string;
+    fileName: string;
+    size: number;
+    mimeType?: string;
+}
+
 export interface Cl1pType {
-    text: string
-    files: string[]
-    expiry: string
+    text: string;
+    files: FileMeta[];
+    expiry: string;
 }
   
 export interface Cl1pZustandType {

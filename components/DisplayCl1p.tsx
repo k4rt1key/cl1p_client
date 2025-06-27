@@ -2,15 +2,14 @@
 
 import { QRCodeSVG } from 'qrcode.react'
 import { Button } from "@/components/ui/button"
-import { Copy } from 'lucide-react'
+import { Copy, Share2, FileText } from 'lucide-react'
 import { DisplayProps } from '@/types/types'
 import toast from 'react-hot-toast'
 import { FilePreviewDisplay } from './FilePreviewDisplay'
 
-
 export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
   if (!propsData) return null
-  const { text, files } = propsData
+  const { text, files, expiry } = propsData
 
   const cl1pUrl = `${process.env.NEXT_PUBLIC_FRONTEND_URL}/${propsName}`
 
@@ -19,16 +18,53 @@ export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
     toast.success('Copied to clipboard!')
   }
 
+  const shareCl1p = async () => {
+    if (navigator.share) {
+      try {
+        await navigator.share({
+          title: `Cl1p: ${propsName}`,
+          text: 'Check out this cl1p!',
+          url: cl1pUrl,
+        })
+      } catch (err) {
+        copyToClipboard(cl1pUrl)
+      }
+    } else {
+      copyToClipboard(cl1pUrl)
+    }
+  }
+
+  const formatExpiryDate = (expiryDate: string) => {
+    const date = new Date(expiryDate)
+    return date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+  }
 
   return (
-    <div className="w-full max-w-3xl mx-auto space-y-6">
-      {/* QR Code and Copy Link Section */}
-      <div className="grid grid-cols-1 gap-4">
-        <div className="bg-white rounded-2xl p-6 flex flex-col gap-6 items-center justify-center">
-          <QRCodeSVG value={cl1pUrl} size={200} />
+    <div className="w-full max-w-4xl mx-auto space-y-8 p-4">
+      {/* QR Code Section */}
+      <div className="flex justify-center">
+        <div className="card-minimal p-6 text-center space-y-4 max-w-sm">
+          {/* Expiry Date */}
+          {expiry && (
+            <div className="space-y-2">
+              <p className="text-sm text-gray-600 dark:text-gray-400">
+                Expires: {formatExpiryDate(expiry)}
+              </p>
+            </div>
+          )}
+          
+          {/* QR Code */}
+          <div className="flex justify-center">
+            <QRCodeSVG 
+              value={cl1pUrl} 
+              size={240} 
+            />
+          </div>
+          
+          {/* Copy Link */}
           <Button
             onClick={() => copyToClipboard(cl1pUrl)}
-            className="w-[200px] bg-gray-900 hover:bg-gray-800 text-white h-12 rounded-xl"
+            className="w-full btn-minimal"
           >
             <Copy className="h-4 w-4 mr-2" />
             Copy Link
@@ -36,45 +72,72 @@ export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
         </div>
       </div>
 
-      {/* Files Grid */}
+      {/* Files Section */}
       {files && files.length > 0 && (
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          {files.map((file: string, index: number) => {
-            const fileName = file.split('/').pop()?.split('?')[0]
-            return (
-               <FilePreviewDisplay
-                key={`${file}-${index}`}
-                url={file}
-                fileName={fileName}
-                contentType={fileName.split('.').pop()?.toLowerCase()}
-               />
-            )
-          })}
+        <div className="space-y-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">
+              Files ({files.length})
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Click on any file to view or download
+            </p>
+          </div>
+          
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {files.map((file, index) => (
+              <FilePreviewDisplay
+                key={`${file.url}-${index}`}
+                url={file.url}
+                fileName={file.fileName}
+                mimeType={file.mimeType}
+                size={file.size}
+              />
+            ))}
+          </div>
         </div>
       )}
 
-      {/* Text Content */}
+      {/* Text Content Section */}
       {text && (
-        <div className=" rounded-2xl">
-          <div className="flex bg-gray-100 items-center justify-between mb-4">
-            <h1></h1>
-
+        <div className="space-y-6">
+          <div className="text-center">
+            <h2 className="text-2xl font-bold mb-2">
+              Text Content
+            </h2>
+            <p className="text-gray-600 dark:text-gray-400">
+              Copy the text below
+            </p>
           </div>
-          <div className="bg-gray-100 rounded-xl p-4 font-mono text-sm">
-            <p className="p-1 whitespace-pre-wrap min-h-[10rem] max-h-[20rem] text-lg overflow-y-scroll">{text}</p>
+          
+          <div className="card-minimal p-6">
+            <div className="space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-2">
+                  <FileText className="w-5 h-5" />
+                  <span className="font-semibold">
+                    Content
+                  </span>
+                </div>
+                <Button
+                  onClick={() => copyToClipboard(text)}
+                  size="sm"
+                  className="btn-minimal"
+                >
+                  <Copy className="h-4 w-4 mr-2" />
+                  Copy Text
+                </Button>
+              </div>
+              
+              <div className="bg-gray-50 dark:bg-gray-900 rounded border p-4 max-h-96 overflow-y-auto">
+                <pre className="whitespace-pre-wrap text-sm leading-relaxed">
+                  {text}
+                </pre>
+              </div>
+            </div>
           </div>
         </div>
       )}
-      <Button
-        variant="ghost"
-        size="lg"
-        onClick={() => copyToClipboard(text)}
-        className="text-lg w-full bg-black text-white"
-      >
-        <Copy className="h-3 w-3 mr-1" />
-        Copy text
-      </Button>
-      <div className='my-30'></div>
     </div>
   )
 }

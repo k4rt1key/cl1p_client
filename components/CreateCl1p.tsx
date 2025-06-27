@@ -2,7 +2,7 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { Clock } from 'lucide-react'
+import { Clock, Upload, Plus } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'react-hot-toast'
@@ -16,7 +16,6 @@ interface TimeOption {
   value: number;
   label: string;
 }
-
 
 interface FormData {
   name: string
@@ -65,34 +64,38 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
     }))
   }
 
-  const uploadFile = async (file: File, url: string) => {
-    const xhr = new XMLHttpRequest()
+  const uploadFile = async (file: File, uploadData: { url: string, fields: Record<string, string> }) => {
+    return new Promise<void>((resolve, reject) => {
+      const formData = new FormData();
+      // Append all fields from the backend
+      Object.entries(uploadData.fields).forEach(([key, value]) => {
+        formData.append(key, value);
+      });
+      // File must be the last field
+      formData.append('file', file);
 
-    xhr.upload.addEventListener('progress', (event) => {
-      if (event.lengthComputable) {
-        const progress = Math.round((event.loaded * 100) / event.total)
-        setUploadProgress(prev => ({
-          ...prev,
-          [file.name]: progress
-        }))
-      }
-    })
-
-    return new Promise((resolve, reject) => {
-      xhr.onload = () => {
-        if (xhr.status === 200) {
-          resolve(null)
-        } else {
-          reject(new Error(`Failed to upload ${file.name}`))
+      const xhr = new XMLHttpRequest();
+      xhr.upload.addEventListener('progress', (event) => {
+        if (event.lengthComputable) {
+          const progress = Math.round((event.loaded * 100) / event.total);
+          setUploadProgress(prev => ({
+            ...prev,
+            [file.name]: progress
+          }));
         }
-      }
-      xhr.onerror = () => reject(new Error(`Network error while uploading ${file.name}`))
-
-      xhr.open('PUT', url)
-      xhr.setRequestHeader('Content-Type', file.type)
-      xhr.send(file)
-    })
-  }
+      });
+      xhr.onload = () => {
+        if (xhr.status === 204 || xhr.status === 201) {
+          resolve();
+        } else {
+          reject(new Error(`Failed to upload ${file.name}`));
+        }
+      };
+      xhr.onerror = () => reject(new Error(`Network error while uploading ${file.name}`));
+      xhr.open('POST', uploadData.url);
+      xhr.send(formData);
+    });
+  };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -104,9 +107,11 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
+            cl1pName: formData.name,
             files: formData.files.map(file => ({
               fileName: fixFileName(file.name),
-              contentType: file.type
+              contentType: file.type,
+              size: file.size
             }))
           })
         })
@@ -116,10 +121,10 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
         }
 
         const { data } = await response.json()
-
+        // data.posts: [{ url, fields }]
         await Promise.all(
           formData.files.map((file, index) =>
-            uploadFile(file, data.urls[index])
+            uploadFile(file, data.posts[index])
           )
         )
       }
@@ -138,7 +143,8 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
             text: formData.text !== '' ? formData.text : "No text shared 😔",
             files: formData.files.map(file => ({
               fileName: fixFileName(file.name),
-              contentType: file.type
+              contentType: file.type,
+              size: file.size
             }))
           })
         }
@@ -150,7 +156,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
 
       setMode('search')
       router.push(`/${formData.name}`)
-      toast.success('✨ Clip created successfully!')
+      toast.success('Cl1p created successfully!')
 
     } catch (err) {
       const message = err instanceof Error ? err.message : 'An unknown error occurred'
@@ -163,102 +169,165 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
   const timeOptions = getTimeOptions(formData.expiryUnit)
 
   return (
-    <div className="min-h-screen">
-      <div className="max-w-3xl mx-auto">
-        <form onSubmit={handleSubmit} className="space-y-8">
-          <div className="grid grid-cols-2 gap-4">
-            <input
-              name="name"
-              value={formData.name}
-              onChange={handleInputChange}
-              placeholder="Name"
-              required
-              type='text'
-              className="w-full text-sm sm:text-lg py-2 px-3 border-2 border-gray-100 rounded-xl focus:outline-none border-2 border-gray-300"
-            />
-            <input
-              name="password"
-              type="password"
-              value={formData.password}
-              onChange={handleInputChange}
-              placeholder="Password (optional)"
-              className="w-full text-sm sm:text-lg py-2 px-3 border-2 border-gray-100 rounded-xl focus:outline-none border-2 border-gray-300"
-            />
-          </div>
+    <div className="min-h-screen py-8">
+      <div className="max-w-3xl mx-auto px-4">
+        {/* Header */}
+        <div className="text-center mb-8">
+          <h1 className="text-3xl font-bold mb-2">
+            Create New Cl1p
+          </h1>
+          <p className="text-gray-600 dark:text-gray-400">
+            Share your files and text with a unique link
+          </p>
+        </div>
 
-
-
-          <DragDropZone onFileSelect={handleFileSelect} />
-
-          {formData.files.length > 0 && (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 ">
-              {formData.files.map((file, index) => (
-                <FilePreview
-                  key={`${file.name}-${index}`}
-                  file={file}
-                  onRemove={() => removeFile(index)}
-                  progress={uploadProgress[file.name]}
+        <form onSubmit={handleSubmit} className="space-y-6">
+          {/* Basic Info */}
+          <div className="card-minimal p-6">
+            <h2 className="text-lg font-semibold mb-4 flex items-center">
+              <Plus className="w-5 h-5 mr-2" />
+              Basic Information
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label htmlFor="name" className="block text-sm font-medium mb-2">
+                  Cl1p Name *
+                </label>
+                <input
+                  name="name"
+                  id="name"
+                  value={formData.name}
+                  onChange={handleInputChange}
+                  placeholder="Enter a unique name"
+                  required
+                  type='text'
+                  className="input-minimal"
                 />
-              ))}
-            </div>
-          )}
-          <textarea
-            name="text"
-            value={formData.text}
-            onChange={handleInputChange}
-            placeholder="Text (optional)"
-            className="min-h-[15rem] rounded-md w-full text-xl bg-gray-50 border-2 border-gray-100 placeholder: p-3 placeholder:text-lg resize-none"
-          />
-          <div className="flex items-center gap-4">
-            <Clock className="h-6 w-6 text-gray-700" />
-            <div className="flex gap-2 flex-1">
-              <Select
-                value={formData.expiryValue.toString()}
-                onValueChange={(value) => setFormData(prev => ({ ...prev, expiryValue: parseInt(value) }))}
-              >
-                <SelectTrigger className="bg-gray-100 border-0 h-12">
-                  <SelectValue placeholder="Select number" />
-                </SelectTrigger>
-                <SelectContent>
-                  {timeOptions.map((option: TimeOption) => (
-                    <SelectItem
-                      key={option.value}
-                      value={option.value.toString()}
-                      className="font-medium"
-                    >
-                      {option.label}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-
-              <Select
-                value={formData.expiryUnit}
-                onValueChange={(value: TimeUnit) => setFormData(prev => ({
-                  ...prev,
-                  expiryUnit: value,
-                  expiryValue: 1
-                }))}
-              >
-                <SelectTrigger className="bg-gray-100 border-0 h-12">
-                  <SelectValue placeholder="Select unit" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="hours" className="font-medium">Hours</SelectItem>
-                  <SelectItem value="days" className="font-medium">Days</SelectItem>
-                  <SelectItem value="months" className="font-medium">Months</SelectItem>
-                </SelectContent>
-              </Select>
+              </div>
+              
+              <div>
+                <label htmlFor="password" className="block text-sm font-medium mb-2">
+                  Password (Optional)
+                </label>
+                <input
+                  name="password"
+                  id="password"
+                  type="password"
+                  value={formData.password}
+                  onChange={handleInputChange}
+                  placeholder="Add password protection"
+                  className="input-minimal"
+                />
+              </div>
             </div>
           </div>
 
-          <Button
-            type="submit"
-            disabled={isSubmitting}
-            className="w-full bg-gray-900 hover:bg-gray-800 text-white h-12 rounded-xl font-medium text-base"
-          >
-            {isSubmitting ? 'Creating... 🚀' : 'Create Your Cl1p'}
-          </Button>
+          {/* Expiry Settings */}
+          <div className="card-minimal p-6">
+            <h2 className="text-lg font-semibold mb-4 flex items-center">
+              <Clock className="w-5 h-5 mr-2" />
+              Expiry Settings
+            </h2>
+            
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Duration
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={formData.expiryValue}
+                  onChange={(e) => setFormData(prev => ({ ...prev, expiryValue: parseInt(e.target.value) || 1 }))}
+                  className="input-minimal"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium mb-2">
+                  Unit
+                </label>
+                <Select
+                  value={formData.expiryUnit}
+                  onValueChange={(value: TimeUnit) => setFormData(prev => ({ ...prev, expiryUnit: value }))}
+                >
+                  <SelectTrigger className="input-minimal">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="minutes">Minutes</SelectItem>
+                    <SelectItem value="hours">Hours</SelectItem>
+                    <SelectItem value="days">Days</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+          </div>
+
+          {/* File Upload */}
+          <div className="card-minimal p-6">
+            <h2 className="text-lg font-semibold mb-4 flex items-center">
+              <Upload className="w-5 h-5 mr-2" />
+              Upload Files
+            </h2>
+            
+            <DragDropZone onFileSelect={handleFileSelect} />
+
+            {formData.files.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-md font-semibold mb-4">
+                  Selected Files ({formData.files.length})
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {formData.files.map((file, index) => (
+                    <FilePreview
+                      key={`${file.name}-${index}`}
+                      file={file}
+                      onRemove={() => removeFile(index)}
+                      progress={uploadProgress[file.name]}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Text Content */}
+          <div className="card-minimal p-6">
+            <h2 className="text-lg font-semibold mb-4">
+              Text Content (Optional)
+            </h2>
+            
+            <textarea
+              name="text"
+              value={formData.text}
+              onChange={handleInputChange}
+              placeholder="Add any text content you'd like to share..."
+              className="input-minimal min-h-[150px] resize-none"
+            />
+          </div>
+
+          {/* Submit Button */}
+          <div className="text-center">
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="btn-minimal text-lg px-8 py-3"
+            >
+              {isSubmitting ? (
+                <>
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white dark:border-black mr-3"></div>
+                  Creating Cl1p...
+                </>
+              ) : (
+                <>
+                  <Plus className="w-5 h-5 mr-2" />
+                  Create Cl1p
+                </>
+              )}
+            </Button>
+          </div>
         </form>
       </div>
     </div>
