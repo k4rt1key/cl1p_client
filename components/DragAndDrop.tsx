@@ -1,6 +1,6 @@
 'use client'
 
-import { useState, useCallback } from 'react'
+import {  useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, File, Image, Video, Music } from 'lucide-react'
 import { cn } from '@/lib/utils'
