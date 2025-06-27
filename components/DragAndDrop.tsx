@@ -10,16 +10,12 @@ interface DragDropZoneProps {
 }
 
 export function DragDropZone({ onFileSelect }: DragDropZoneProps) {
-  const [isDragging, setIsDragging] = useState(false)
-
   const onDrop = useCallback((acceptedFiles: File[]) => {
     onFileSelect(acceptedFiles)
   }, [onFileSelect])
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
     onDrop,
-    onDragEnter: () => setIsDragging(true),
-    onDragLeave: () => setIsDragging(false)
   })
 
   return (

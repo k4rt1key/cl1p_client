@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState, useRef } from 'react'
+import React, { useEffect, useState } from 'react'
 import { SearchProps } from '@/types/types'
 import { useRouter } from 'next/navigation'
 import { Search, Eye, EyeOff } from 'lucide-react'
