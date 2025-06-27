@@ -9,7 +9,7 @@ module.exports = {
     return [
       {
         source: '/api/:path*',
-        destination: 'http://api.cl1p.in/api/:path*', // Proxy to your backend
+        destination: 'https://api.cl1p.in/api/:path*', // Proxy to your backend
       },
     ];
   },
