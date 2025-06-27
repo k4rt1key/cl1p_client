@@ -2,7 +2,7 @@
 
 import { QRCodeSVG } from 'qrcode.react'
 import { Button } from "@/components/ui/button"
-import { Copy, Share2, FileText } from 'lucide-react'
+import { Copy, FileText } from 'lucide-react'
 import { DisplayProps } from '@/types/types'
 import toast from 'react-hot-toast'
 import { FilePreviewDisplay } from './FilePreviewDisplay'
@@ -16,22 +16,6 @@ export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
   const copyToClipboard = (content: string) => {
     navigator.clipboard.writeText(content)
     toast.success('Copied to clipboard!')
-  }
-
-  const shareCl1p = async () => {
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: `Cl1p: ${propsName}`,
-          text: 'Check out this cl1p!',
-          url: cl1pUrl,
-        })
-      } catch (err) {
-        copyToClipboard(cl1pUrl)
-      }
-    } else {
-      copyToClipboard(cl1pUrl)
-    }
   }
 
   const formatExpiryDate = (expiryDate: string) => {

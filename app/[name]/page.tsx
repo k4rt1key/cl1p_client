@@ -79,11 +79,11 @@ export default function Cl1pPage() {
         if (!cl1pData) {
             fetchCl1pData();
         }
-    }, [name, searched]);
+    }, [name, searched, cl1pData, fetchCl1pData]);
 
     useEffect(() => {
         setName(pathname.replace('/', ''));
-    }, [pathname]);
+    }, [pathname, setName]);
 
     if (mode === 'create') {
         return <CreateCl1p propsName={name} propsPassword={password} />;

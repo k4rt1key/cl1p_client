@@ -12,11 +12,6 @@ import { DragDropZone } from '@/components/DragAndDrop'
 import { getTimeOptions, convertToHours, type TimeUnit } from '@/utils/time'
 import { fixFileName } from '@/utils/file'
 
-interface TimeOption {
-  value: number;
-  label: string;
-}
-
 interface FormData {
   name: string
   text: string
@@ -165,8 +160,6 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
       setIsSubmitting(false)
     }
   }
-
-  const timeOptions = getTimeOptions(formData.expiryUnit)
 
   return (
     <div className="min-h-screen py-8">
