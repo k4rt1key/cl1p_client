@@ -179,39 +179,10 @@ export function FilePreview({ file, onRemove, progress }: FilePreviewProps) {
       {/* Upload Progress Overlay */}
       {isUploading && (
         <div className="absolute inset-0 flex items-center justify-center bg-white/80 dark:bg-black/80 rounded-lg">
-          <div className="text-center space-y-2">
-            <div className="relative">
-              <svg className="w-12 h-12" viewBox="0 0 36 36">
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  fill="none"
-                  className="stroke-gray-200 dark:stroke-gray-700"
-                  strokeWidth="2"
-                />
-                <circle
-                  cx="18"
-                  cy="18"
-                  r="16"
-                  fill="none"
-                  className="stroke-black dark:stroke-white"
-                  strokeWidth="2"
-                  strokeDasharray={100}
-                  strokeDashoffset={100 - progress}
-                  transform="rotate(-90 18 18)"
-                  strokeLinecap="round"
-                />
-              </svg>
-              <div className="absolute inset-0 flex items-center justify-center">
-                <span className="text-sm font-medium">
-                  {progress}%
-                </span>
-              </div>
-            </div>
-            <p className="text-xs text-gray-600 dark:text-gray-400">
-              Uploading...
-            </p>
+          <div className="text-center">
+            <span className="text-2xl font-bold text-black dark:text-white">
+              {progress}%
+            </span>
           </div>
         </div>
       )}

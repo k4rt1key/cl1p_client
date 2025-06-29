@@ -10,7 +10,7 @@ import UseCl1pZustand from '@/lib/store'
 import { FilePreview } from '@/components/FilePreview'
 import { DragDropZone } from '@/components/DragAndDrop'
 import { convertToHours, type TimeUnit } from '@/utils/time'
-import { fixFileName } from '@/utils/file'
+import { fixFileName, getMaxFileSize, getMaxFileSizeFormatted, formatFileSize } from '@/utils/file'
 
 interface FormData {
   name: string
@@ -50,10 +50,25 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
   }
 
   const handleFileSelect = (newFiles: File[]) => {
+    const MAX_FILE_SIZE = getMaxFileSize();
+    
+    // Filter out files that are too large
+    const validFiles = newFiles.filter(file => {
+      if (file.size > MAX_FILE_SIZE) {
+        toast.error(`File '${file.name}' is too large. Maximum size allowed is ${getMaxFileSizeFormatted()} 📁`);
+        return false;
+      }
+      return true;
+    });
+    
+    if (validFiles.length === 0) {
+      return; // No valid files to add
+    }
+    
     setFormData(prev => ({
       ...prev,
-      files: [...prev.files, ...newFiles]
-    }))
+      files: [...prev.files, ...validFiles]
+    }));
   }
 
   const removeFile = (index: number) => {
@@ -87,6 +102,25 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
         if (xhr.status === 204 || xhr.status === 201) {
           resolve();
         } else {
+          // Try to parse error response for meaningful messages
+          try {
+            const responseText = xhr.responseText;
+            if (responseText) {
+              const errorData = JSON.parse(responseText);
+              if (errorData.message && errorData.message.includes('exceeds maximum allowed size')) {
+                // Extract file size limit from error message
+                const sizeMatch = errorData.message.match(/(\d+) bytes/);
+                const maxSize = sizeMatch ? parseInt(sizeMatch[1]) : getMaxFileSize();
+                const maxSizeFormatted = formatFileSize(maxSize);
+                reject(new Error(`File '${file.name}' is too large. Maximum size allowed is ${maxSizeFormatted}`));
+                return;
+              }
+              reject(new Error(errorData.message || `Failed to upload ${file.name}`));
+              return;
+            }
+          } catch (parseError) {
+            // If JSON parsing fails, use generic error
+          }
           reject(new Error(`Failed to upload ${file.name}`));
         }
       };
@@ -161,8 +195,40 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
       toast.success('Cl1p created successfully!')
 
     } catch (err) {
-      const message = err instanceof Error ? err.message : 'An unknown error occurred'
-      toast.error(`${message} 😔`)
+      // Clear upload progress on error
+      setUploadProgress({});
+      
+      let errorMessage = 'An unknown error occurred';
+      
+      if (err instanceof Error) {
+        errorMessage = err.message;
+        
+        // Check if it's a file size error
+        if (errorMessage.includes('too large') || errorMessage.includes('exceeds maximum')) {
+          toast.error(`${errorMessage} 📁`);
+          return;
+        }
+        
+        // Check if it's a network error
+        if (errorMessage.includes('Network error')) {
+          toast.error('Network error. Please check your connection and try again 🌐');
+          return;
+        }
+        
+        // Check if it's an upload URL error
+        if (errorMessage.includes('Failed to get upload URLs')) {
+          toast.error('Failed to prepare upload. Please try again 🔄');
+          return;
+        }
+        
+        // Check if it's a creation error
+        if (errorMessage.includes('Failed to create clip')) {
+          toast.error('Failed to create cl1p. Please try again 🔄');
+          return;
+        }
+      }
+      
+      toast.error(`${errorMessage} 😔`);
     } finally {
       setIsSubmitting(false)
     }

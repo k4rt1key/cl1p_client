@@ -4,6 +4,7 @@ import {  useCallback } from 'react'
 import { useDropzone } from 'react-dropzone'
 import { Upload, File, Image, Video, Music } from 'lucide-react'
 import { cn } from '@/lib/utils'
+import { getMaxFileSizeFormatted } from '@/utils/file'
 
 interface DragDropZoneProps {
   onFileSelect: (files: File[]) => void
@@ -64,6 +65,8 @@ export function DragDropZone({ onFileSelect }: DragDropZoneProps) {
         {/* Supported Formats */}
         <div className="text-xs text-gray-500 dark:text-gray-500">
           Supports: Images, Videos, Documents, Audio, Archives, and more
+          <br />
+          <span className="text-orange-600 dark:text-orange-400">Maximum file size: {getMaxFileSizeFormatted()} per file</span>
         </div>
       </div>
     </div>
