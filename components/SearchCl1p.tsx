@@ -18,19 +18,29 @@ export default function SearchCl1p({
 }: SearchProps) {
   const [passType, setPassType] = useState<'text' | 'password'>('password')
   const [propsNameState, setPropsNameState] = useState<string>(propsName)
+  const [localPassword, setLocalPassword] = useState<string>(propsPassword)
   const router = useRouter()
 
   useEffect(() => {
     setPropsNameState(propsName)
   },[propsName])
 
+  useEffect(() => {
+    setLocalPassword(propsPassword)
+  },[propsPassword])
+
   if (!propsSetName || !propsSetPassword) {
     throw new Error("Development Error !!!")
   }
 
+  // useEffect(() => {
+  //   console.log(propsNameState)
+  // },[propsNameState])
+
   const handleSearch = async (e: React.FormEvent) => {
     e.preventDefault()
     propsSetName(propsNameState)
+    propsSetPassword(localPassword) // Only update global password state on submit
     router.push(`/${propsNameState}`)
     propsTriggerNow()
     if(fetchCl1pData){
@@ -55,6 +65,7 @@ export default function SearchCl1p({
                 setPropsNameState(e.target.value)
                 propsSetIsPassword(false)
                 propsSetPassword('')
+                setLocalPassword('')
               }}
               required
               className="input-minimal"
@@ -71,8 +82,8 @@ export default function SearchCl1p({
                   id="password"
                   type={passType}
                   placeholder="Enter password"
-                  value={propsPassword}
-                  onChange={(e) => propsSetPassword(e.target.value)}
+                  value={localPassword}
+                  onChange={(e) => setLocalPassword(e.target.value)}
                   required
                   className="input-minimal pr-10"
                 />

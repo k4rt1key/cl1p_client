@@ -27,6 +27,8 @@ interface UploadProgress {
 
 export default function CreatePage({ propsName, propsPassword }: { propsName: string; propsPassword: string }) {
   const setMode = UseCl1pZustand((state) => state.setMode)
+  const setName = UseCl1pZustand((state) => state.setName)
+  const setPassword = UseCl1pZustand((state) => state.setPassword)
   const router = useRouter()
 
   const [formData, setFormData] = useState<FormData>({
@@ -149,8 +151,11 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
         throw new Error('Failed to create clip')
       }
 
+      // Navigate to home page and trigger search for the created cl1p
       setMode('search')
-      router.push(`/${formData.name}`)
+      setName(formData.name)
+      setPassword(formData.password)
+      router.push('/')
       toast.success('Cl1p created successfully!')
 
     } catch (err) {

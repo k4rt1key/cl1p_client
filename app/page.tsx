@@ -2,6 +2,7 @@
 // app/page.tsx
 'use client'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
 
 // UI
 import CreateCl1p from '@/components/CreateCl1p'
@@ -78,7 +79,13 @@ export default function Cl1pPage() {
             console.error(err)
         }
     }
-   
+
+    // Auto-trigger search when name or password changes
+    useEffect(() => {
+        if (name && mode === 'search' && !cl1pData) {
+            fetchCl1pData();
+        }
+    }, [name, password, mode, cl1pData]);
 
     if (mode == 'create') {
         return <CreateCl1p propsName={name} propsPassword={password} />
