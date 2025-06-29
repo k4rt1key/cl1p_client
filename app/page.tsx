@@ -2,7 +2,7 @@
 // app/page.tsx
 'use client'
 import { useRouter } from 'next/navigation'
-import { useEffect } from 'react'
+import { useEffect, useCallback, useRef } from 'react'
 
 // UI
 import CreateCl1p from '@/components/CreateCl1p'
@@ -16,6 +16,7 @@ import UseCl1pZustand from '@/lib/store'
 
 export default function Cl1pPage() {
     const router = useRouter()
+    const isSearchingRef = useRef(false)
 
     const name = UseCl1pZustand((state) => state.name)
     const password = UseCl1pZustand((state) => state.password)
@@ -32,11 +33,21 @@ export default function Cl1pPage() {
     const setLoading = UseCl1pZustand((state) => state.setLoading)
     const setCl1pData = UseCl1pZustand((state) => state.setCl1pData)
 
-    if(cl1pData){
-        setLoading(true);
-    }
+    // Move setLoading call to useEffect to avoid setState during render
+    useEffect(() => {
+        if(cl1pData){
+            setLoading(true);
+        }
+    }, [cl1pData, setLoading]);
 
-    const fetchCl1pData = async () => {
+    const fetchCl1pData = useCallback(async () => {
+        // Prevent multiple simultaneous searches
+        if (isSearchingRef.current) {
+            return;
+        }
+        
+        isSearchingRef.current = true;
+        
         try {
             setLoading(true);
             const requestOptions = {
@@ -77,15 +88,22 @@ export default function Cl1pPage() {
             toast.error('An unexpected error occurred')
             setLoading(false);
             console.error(err)
+        } finally {
+            isSearchingRef.current = false;
         }
-    }
+    }, [name, password, router, setCl1pData, setIsPassword, setLoading, setMode]);
 
     // Auto-trigger search when name or password changes
     useEffect(() => {
-        if (name && mode === 'search' && !cl1pData) {
-            fetchCl1pData();
+        if (name && mode === 'search' && !cl1pData && !isSearchingRef.current) {
+            // Add a small delay to prevent rapid successive calls during development
+            const timeoutId = setTimeout(() => {
+                fetchCl1pData();
+            }, 100);
+            
+            return () => clearTimeout(timeoutId);
         }
-    }, [name, password, mode, cl1pData]);
+    }, [name, password, mode, cl1pData, fetchCl1pData]);
 
     if (mode == 'create') {
         return <CreateCl1p propsName={name} propsPassword={password} />

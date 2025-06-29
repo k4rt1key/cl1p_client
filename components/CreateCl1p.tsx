@@ -2,7 +2,7 @@
 
 import { useState, ChangeEvent, FormEvent } from 'react'
 import { useRouter } from 'next/navigation'
-import { Clock, Upload, Plus } from 'lucide-react'
+import { Clock, Upload, Plus, Eye, EyeOff } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select'
 import { toast } from 'react-hot-toast'
@@ -30,6 +30,8 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
   const setName = UseCl1pZustand((state) => state.setName)
   const setPassword = UseCl1pZustand((state) => state.setPassword)
   const router = useRouter()
+
+  const [passType, setPassType] = useState<'text' | 'password'>('password')
 
   const [formData, setFormData] = useState<FormData>({
     name: propsName || '',
@@ -208,15 +210,28 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
                 <label htmlFor="password" className="block text-sm font-medium mb-2">
                   Password (Optional)
                 </label>
-                <input
-                  name="password"
-                  id="password"
-                  type="password"
-                  value={formData.password}
-                  onChange={handleInputChange}
-                  placeholder="Add password protection"
-                  className="input-minimal"
-                />
+                <div className="relative">
+                  <input
+                    name="password"
+                    id="password"
+                    type={passType}
+                    value={formData.password}
+                    onChange={handleInputChange}
+                    placeholder="Add password protection"
+                    className="input-minimal pr-10"
+                  />
+                  <button
+                    type="button"
+                    onClick={() => setPassType(passType === 'password' ? 'text' : 'password')}
+                    className="absolute right-3 top-1/2 transform -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-gray-300"
+                  >
+                    {passType === 'password' ? (
+                      <Eye className="w-4 h-4" />
+                    ) : (
+                      <EyeOff className="w-4 h-4" />
+                    )}
+                  </button>
+                </div>
               </div>
             </div>
           </div>
