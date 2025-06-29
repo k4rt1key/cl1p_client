@@ -119,6 +119,7 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
               return;
             }
           } catch (parseError) {
+            console.error(parseError)
             // If JSON parsing fails, use generic error
           }
           reject(new Error(`Failed to upload ${file.name}`));
