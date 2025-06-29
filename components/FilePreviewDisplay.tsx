@@ -1,5 +1,8 @@
-import { File, FileText, Image as ImageIcon, Video, Music, Archive, Download, Eye } from 'lucide-react'
+'use client';
+
+import { File, FileText, Image as ImageIcon, Video, Music, Archive, Download, Eye } from 'lucide-react';
 import Image from 'next/image';
+import { useState } from 'react';
 
 interface FilePreviewProps {
     url: string,
@@ -9,6 +12,8 @@ interface FilePreviewProps {
 }
 
 export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: FilePreviewProps) {
+    const [imageError, setImageError] = useState(false);
+
     const getFileIcon = (mimeType: string | undefined) => {
         const type = (mimeType || '').toLowerCase();
         if (type.startsWith('image/')) return <ImageIcon className="w-6 h-6" />;
@@ -19,40 +24,47 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
         return <File className="w-6 h-6" />;
     };
 
-    const getFilePreview = ({ url, fileName, mimeType }: FilePreviewProps) => {
+    const getFilePreview = () => {
         const type = (mimeType || '').toLowerCase();
-        if (type.startsWith('image/')) {
+
+        if (type.startsWith('image/') && !imageError) {
             return (
                 <Image
                     src={url}
                     alt={fileName}
-                    className="w-full h-full object-cover rounded"
+                    className="w-full h-full object-contain rounded"
                     width={400}
                     height={400}
                     loading="lazy"
+                    onError={() => setImageError(true)}
                 />
             );
         }
+
         if (type.startsWith('video/')) {
             return (
                 <div className="relative w-full h-full">
-                    <video className="w-full h-full object-cover rounded" preload="metadata">
+                    <video
+                        className="w-full h-full object-cover rounded"
+                        preload="metadata"
+                        controls={false}
+                        muted
+                    >
                         <source src={url} type={mimeType} />
                     </video>
-                    <div className="absolute inset-0 bg-black/20 flex items-center justify-center rounded">
-                        <div className="w-8 h-8 bg-white/80 rounded-full flex items-center justify-center">
-                            <svg className="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z" />
-                            </svg>
+                    <div className="absolute inset-0 bg-black/30 flex items-center justify-center rounded">
+                        <div className="w-10 h-10 bg-white/80 rounded-full flex items-center justify-center shadow-md">
+                            <Video className="w-5 h-5 text-black" />
                         </div>
                     </div>
                 </div>
             );
         }
+
         return (
-            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-50 dark:bg-gray-900 rounded p-4">
+            <div className="w-full h-full flex flex-col items-center justify-center bg-gray-100 dark:bg-gray-900 rounded p-4">
                 <div className="mb-2">{getFileIcon(mimeType)}</div>
-                <p className="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide">
+                <p className="text-xs text-gray-600 dark:text-gray-400 uppercase tracking-wide text-center">
                     {mimeType || 'File'}
                 </p>
             </div>
@@ -67,34 +79,20 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
         return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
     };
 
-    // Helper to get file extension label
-    const getFileExtensionLabel = (fileName: string, mimeType?: string) => {
+    const getFileExtensionLabel = () => {
         if (!mimeType) {
             const ext = fileName.split('.').pop();
             return ext ? ext.toUpperCase() : 'FILE';
         }
-        if (mimeType.startsWith('image/')) {
-            return mimeType.split('/')[1]?.toUpperCase() || 'IMG';
-        }
-        if (mimeType === 'application/pdf') return 'PDF';
-        if (
-            mimeType === 'application/zip' ||
-            mimeType === 'application/x-zip-compressed'
-        ) return 'ZIP';
-        if (
-            mimeType === 'application/x-rar-compressed' ||
-            mimeType === 'application/vnd.rar'
-        ) return 'RAR';
-        if (
-            mimeType === 'application/x-7z-compressed'
-        ) return '7Z';
-        if (mimeType.startsWith('video/')) {
-            return mimeType.split('/')[1]?.toUpperCase() || 'VIDEO';
-        }
-        if (mimeType.startsWith('audio/')) {
-            return mimeType.split('/')[1]?.toUpperCase() || 'AUDIO';
-        }
-        // fallback to file extension
+        const type = mimeType.toLowerCase();
+        if (type.startsWith('image/')) return type.split('/')[1]?.toUpperCase() || 'IMG';
+        if (type === 'application/pdf') return 'PDF';
+        if (['application/zip', 'application/x-zip-compressed'].includes(type)) return 'ZIP';
+        if (['application/x-rar-compressed', 'application/vnd.rar'].includes(type)) return 'RAR';
+        if (type === 'application/x-7z-compressed') return '7Z';
+        if (type.startsWith('video/')) return type.split('/')[1]?.toUpperCase() || 'VIDEO';
+        if (type.startsWith('audio/')) return type.split('/')[1]?.toUpperCase() || 'AUDIO';
+
         const ext = fileName.split('.').pop();
         return ext ? ext.toUpperCase() : 'FILE';
     };
@@ -102,15 +100,13 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
     return (
         <div className="file-preview-minimal group">
             <div className="relative aspect-square overflow-hidden">
-                {/* File Preview */}
-                <div className="w-full h-full">
-                    {getFilePreview({ url, fileName, mimeType })}
-                </div>
-                {/* Hover Overlay - Desktop Only */}
+                <div className="w-full h-full">{getFilePreview()}</div>
+
+                {/* Desktop Hover Actions */}
                 <div className="absolute inset-0 bg-black/0 group-hover:bg-black/20 transition-colors duration-200 flex items-center justify-center opacity-0 group-hover:opacity-100 hidden md:flex">
                     <div className="flex gap-2">
                         <button
-                            className="p-2 bg-white/80 rounded hover:bg-white transition-colors duration-200"
+                            className="p-2 bg-white/80 rounded hover:bg-white transition"
                             onClick={(e) => {
                                 e.preventDefault();
                                 window.open(url, '_blank');
@@ -119,7 +115,7 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
                             <Eye className="w-4 h-4" />
                         </button>
                         <button
-                            className="p-2 bg-white/80 rounded hover:bg-white transition-colors duration-200"
+                            className="p-2 bg-white/80 rounded hover:bg-white transition"
                             onClick={(e) => {
                                 e.preventDefault();
                                 const link = document.createElement('a');
@@ -133,19 +129,19 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
                     </div>
                 </div>
             </div>
-            {/* File Info */}
+
             <div className="p-3">
                 <h3 className="font-medium text-sm truncate mb-2">{fileName}</h3>
                 <div className="flex items-center justify-between gap-2">
                     <div className="flex items-center gap-2 text-xs text-gray-500 dark:text-gray-400">
-                        <span className="uppercase">{getFileExtensionLabel(fileName, mimeType)}</span>
+                        <span className="uppercase">{getFileExtensionLabel()}</span>
                         <span>•</span>
                         <span>{formatFileSize(size)}</span>
                     </div>
-                    {/* Mobile Action Buttons - Always Visible on Mobile */}
+                    {/* Mobile Actions */}
                     <div className="flex gap-1 md:hidden">
                         <button
-                            className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                            className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -155,7 +151,7 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
                             <Eye className="w-3 h-3" />
                         </button>
                         <button
-                            className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700 transition-colors duration-200"
+                            className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
                             onClick={(e) => {
                                 e.preventDefault();
                                 e.stopPropagation();
@@ -173,4 +169,3 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
         </div>
     );
 }
-
