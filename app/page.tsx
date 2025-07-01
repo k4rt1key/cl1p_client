@@ -118,9 +118,9 @@ export default function Cl1pPage() {
             <div className="max-w-4xl mx-auto space-y-12">
                 {/* Hero Section */}
                 <div className="text-center space-y-6">
-                    <h1 className="text-4xl md:text-5xl font-bold">
+                    <h3 className="text-2xl md:text-3xl font-bold">
                         Cl1p
-                    </h1>
+                    </h3>
                     <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto">
                         Share files and text instantly with secure links
                     </p>

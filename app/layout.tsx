@@ -16,7 +16,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
+    <html lang="en" className="min-h-full h-full">
       <head>
        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8375899957851400" crossOrigin="anonymous">
        </script>
@@ -32,15 +32,16 @@ export default function RootLayout({
         }}
       />
       </head>
-      <body className={inter.className}>
-        <div className='bg-background/30 backdrop-blur-md blur-container h-10 fixed top-0 left-0 right-0'></div>
-        <Navbar/>
-        <div className='mt-20'></div>
-        <div className='pt-8 px-4 sm:px-6'>
-          {children}
+      <body className={inter.className + ' min-h-full h-full flex flex-col'}>
+        <div className='blur-container h-10 fixed top-0 left-0 right-0'></div>
+        {/* Flex row for sidebar and main content */}
+        <div className="flex flex-1 min-h-screen">
+          <Navbar />
+          <main className="flex-1 px-4 py-4 w-full">
+            {children}
+          </main>
         </div>
         <Toaster />
-        <div className='mt-20'></div>
       </body>
     </html>
   )

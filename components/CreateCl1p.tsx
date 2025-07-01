@@ -303,6 +303,35 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
             </div>
           </div>
 
+
+          {/* File Upload */}
+          <div className="card-minimal p-6">
+            <h2 className="text-lg font-semibold mb-4 flex items-center">
+              <Upload className="w-5 h-5 mr-2" />
+              Upload Files
+            </h2>
+            
+            <DragDropZone onFileSelect={handleFileSelect} />
+
+            {formData.files.length > 0 && (
+              <div className="mt-6">
+                <h3 className="text-md font-semibold mb-4">
+                  Selected Files ({formData.files.length})
+                </h3>
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                  {formData.files.map((file, index) => (
+                    <FilePreview
+                      key={`${file.name}-${index}`}
+                      file={file}
+                      onRemove={() => removeFile(index)}
+                      progress={uploadProgress[file.name]}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+
           {/* Expiry Settings */}
           <div className="card-minimal p-6">
             <h2 className="text-lg font-semibold mb-4 flex items-center">
@@ -345,33 +374,6 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
             </div>
           </div>
 
-          {/* File Upload */}
-          <div className="card-minimal p-6">
-            <h2 className="text-lg font-semibold mb-4 flex items-center">
-              <Upload className="w-5 h-5 mr-2" />
-              Upload Files
-            </h2>
-            
-            <DragDropZone onFileSelect={handleFileSelect} />
-
-            {formData.files.length > 0 && (
-              <div className="mt-6">
-                <h3 className="text-md font-semibold mb-4">
-                  Selected Files ({formData.files.length})
-                </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                  {formData.files.map((file, index) => (
-                    <FilePreview
-                      key={`${file.name}-${index}`}
-                      file={file}
-                      onRemove={() => removeFile(index)}
-                      progress={uploadProgress[file.name]}
-                    />
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
 
           {/* Text Content */}
           <div className="card-minimal p-6">
