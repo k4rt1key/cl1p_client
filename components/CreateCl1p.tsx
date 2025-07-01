@@ -151,7 +151,8 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
         })
 
         if (!response.ok) {
-          throw new Error('Failed to get upload URLs')
+          const error = await response.json()
+          throw new Error(error.message)
         }
 
         const { data } = await response.json()
