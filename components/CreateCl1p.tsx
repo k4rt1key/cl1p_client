@@ -185,7 +185,8 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
       )
 
       if (!createResponse.ok) {
-        throw new Error('Failed to create clip')
+        const error = await createResponse.json()
+        throw new Error(error.message)
       }
 
       // Navigate to home page and trigger search for the created cl1p
@@ -204,29 +205,8 @@ export default function CreatePage({ propsName, propsPassword }: { propsName: st
       if (err instanceof Error) {
         errorMessage = err.message;
         
-        // Check if it's a file size error
-        if (errorMessage.includes('too large') || errorMessage.includes('exceeds maximum')) {
-          toast.error(`${errorMessage} 📁`);
-          return;
-        }
-        
-        // Check if it's a network error
-        if (errorMessage.includes('Network error')) {
-          toast.error('Network error. Please check your connection and try again 🌐');
-          return;
-        }
-        
-        // Check if it's an upload URL error
-        if (errorMessage.includes('Failed to get upload URLs')) {
-          toast.error('Failed to prepare upload. Please try again 🔄');
-          return;
-        }
-        
-        // Check if it's a creation error
-        if (errorMessage.includes('Failed to create clip')) {
-          toast.error('Failed to create cl1p. Please try again 🔄');
-          return;
-        }
+        toast.error(errorMessage);
+        return;
       }
       
       toast.error(`${errorMessage} 😔`);

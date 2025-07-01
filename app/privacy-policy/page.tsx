@@ -13,7 +13,6 @@ export default function PrivacyPolicyPage() {
         <li><strong>Third-Party Services:</strong> We use Google Analytics and AdSense. These services may collect anonymous usage data as described in their own privacy policies.</li>
         <li><strong>Contact:</strong> For privacy concerns, contact <a href="mailto:kartikvaghasiya4477@gmail.com" className="text-blue-600 dark:text-blue-400 underline">kartikvaghasiya4477@gmail.com</a>.</li>
       </ul>
-      <p className="text-sm text-gray-500 mt-8">This policy may be updated from time to time. Please check back for changes.</p>
     </main>
   )
 } 

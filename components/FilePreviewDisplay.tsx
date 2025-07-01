@@ -112,7 +112,7 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
                                 window.open(url, '_blank');
                             }}
                         >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-6 h-6" />
                         </button>
                         <button
                             className="p-2 bg-white/80 rounded hover:bg-white transition"
@@ -124,7 +124,7 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
                                 link.click();
                             }}
                         >
-                            <Download className="w-4 h-4" />
+                            <Download className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
@@ -148,7 +148,7 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
                                 window.open(url, '_blank');
                             }}
                         >
-                            <Eye className="w-3 h-3" />
+                            <Eye className="w-6 h-6" />
                         </button>
                         <button
                             className="p-1.5 bg-gray-100 dark:bg-gray-800 rounded hover:bg-gray-200 dark:hover:bg-gray-700"
@@ -161,7 +161,7 @@ export function FilePreviewDisplay({ url, fileName, mimeType = '', size = 0 }: F
                                 link.click();
                             }}
                         >
-                            <Download className="w-3 h-3" />
+                            <Download className="w-6 h-6" />
                         </button>
                     </div>
                 </div>
