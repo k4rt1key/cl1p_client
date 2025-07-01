@@ -28,10 +28,10 @@ export function InstructionCards() {
   return (
     <div className="space-y-8 mt-8">
       <div className="text-center">
-        <h2 className="text-2xl font-bold mb-2">
+        <h2 className="text-lg md:text-2xl font-bold mb-2">
           How to Use Cl1p
         </h2>
-        <p className="text-gray-600 dark:text-gray-400">
+        <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
           Get started with these simple steps
         </p>
       </div>
@@ -44,7 +44,7 @@ export function InstructionCards() {
                 <div className="w-10 h-10 bg-gray-100 dark:bg-gray-800 rounded-lg flex items-center justify-center">
                   {instruction.icon}
                 </div>
-                <CardTitle className="text-lg font-semibold">
+                <CardTitle className="text-base md:text-lg font-semibold">
                   {instruction.title}
                 </CardTitle>
               </div>

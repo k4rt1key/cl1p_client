@@ -60,10 +60,10 @@ export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
       {files && files.length > 0 && (
         <div className="space-y-6">
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-2">
+            <h2 className="text-lg md:text-2xl font-bold mb-2">
               Files ({files.length})
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
               Click on any file to view or download
             </p>
           </div>
@@ -86,10 +86,10 @@ export default function DisplayCl1p({ propsName, propsData }: DisplayProps) {
       {text && (
         <div className="space-y-6">
           <div className="text-center">
-            <h2 className="text-2xl font-bold mb-2">
+            <h2 className="text-lg md:text-2xl font-bold mb-2">
               Text Content
             </h2>
-            <p className="text-gray-600 dark:text-gray-400">
+            <p className="text-sm md:text-base text-gray-600 dark:text-gray-400">
               Copy the text below
             </p>
           </div>
