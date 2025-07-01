@@ -20,6 +20,17 @@ export default function RootLayout({
       <head>
        <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8375899957851400" crossOrigin="anonymous">
        </script>
+       <script async src="https://www.googletagmanager.com/gtag/js?id=G-VDTZ5VWS7B"></script>
+      <script
+        dangerouslySetInnerHTML={{
+          __html: `
+            window.dataLayer = window.dataLayer || [];
+            function gtag(){dataLayer.push(arguments);}
+            gtag('js', new Date());
+            gtag('config', 'G-VDTZ5VWS7B');
+          `,
+        }}
+      />
       </head>
       <body className={inter.className}>
         <div className='bg-background/30 backdrop-blur-md blur-container h-10 fixed top-0 left-0 right-0'></div>
